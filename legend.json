@@ -41,5 +41,14 @@
 	"e_50": "subj-eve-place",
 	"r_79": "no_relation",
 	"e_82": "subj-org-friendly",
-	"r_83": "org:friendly"
+	"r_83": "org:friendly",
+	"e_85": "subj-org-affiliation",
+	"e_87": "subj-eve-active_org",
+	"e_88": "subj-eve-passive_org",
+	"r_84": "org:alternate_names",
+	"r_86": "org:political/ideological/religious affiliation",
+	"r_89": "eve:active_organization",
+	"r_90": "eve:passive_organization",
+	"r_91": "no_relation",
+	"r_92": "no_relation"
 }
