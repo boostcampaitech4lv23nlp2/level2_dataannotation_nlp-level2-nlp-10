@@ -39,5 +39,7 @@
 	"r_62": "org:alternate_names",
 	"r_68": "per:title",
 	"e_50": "subj-eve-place",
-	"r_79": "no_relation"
+	"r_79": "no_relation",
+	"e_82": "subj-org-friendly",
+	"r_83": "org:friendly"
 }
