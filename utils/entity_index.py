@@ -1,5 +1,6 @@
 import re
 
+
 def entity_index(word, start_index, sentence):
     matched = re.finditer(re.escape(word), sentence)
     new_standard = float("inf")
