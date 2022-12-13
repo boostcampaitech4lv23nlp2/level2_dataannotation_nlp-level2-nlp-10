@@ -1,10 +1,13 @@
 import os
 import json
 from collections import defaultdict
+import re
 
 import pandas as pd
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+
+from utils.entity_index import entity_index
 
 def make_df(
     html_directory: str, html_file_list: list, json_directory: str, json_file_list: list, legend: dict
@@ -50,9 +53,11 @@ def make_df(
             # json_data에 entity가 1개라면 dataframe에 문장과 해당 entity만 입력합니다.
             elif len(json_data['entities']) == 1:
                 entity, word = legend[json_data['entities'][0]['classId']], json_data['entities'][0]['offsets'][0]['text']
+                start = json_data['entities'][0]['offsets'][0]['start']
+                len_word = len(word)
                 entity_list = entity.split('-')
                 new_word = "<{}>{}</{}>".format(entity_list[0], word, entity_list[0])
-                sentence = sentence.replace(word, new_word)
+                sentence = sentence[:start] + new_word + sentence[start+len_word:]
                 # subject entity만 있다면 subject entity만 입력합니다.
                 if entity_list[0] == 'subj':
                     df_2 = pd.DataFrame({"Id": [int(idx)], "sentence": [sentence], "subj_entity_type": [entity_list[1].upper()], 
@@ -65,7 +70,11 @@ def make_df(
             # json data에 entity가 2개라면 정상적으로 dataframe에 모든 정보를 입력합니다.
             else:
                 entity_1, word_1 = legend[json_data['entities'][0]['classId']], json_data['entities'][0]['offsets'][0]['text']
+                start_1 = json_data['entities'][0]['offsets'][0]['start']
                 entity_2, word_2 = legend[json_data['entities'][1]['classId']], json_data['entities'][1]['offsets'][0]['text']
+                start_2 = json_data['entities'][1]['offsets'][0]['start']
+
+                len_word_1, len_word_2 = len(word_1), len(word_2)
 
                 # relation이 정의되어 있지 않다면 빈 문자열을 넣습니다.
                 if not json_data['relations']:
@@ -82,8 +91,9 @@ def make_df(
                 new_word_2 = "<{}>{}</{}>".format(entity_list_2[0], word_2, entity_list_2[0])
                 
                 # 문장 속의 entity 단어 양 옆에 entity 토큰을 붙입니다.
-                sentence = sentence.replace(word_1, new_word_1)
-                sentence = sentence.replace(word_2, new_word_2)
+                sentence = sentence[:start_1] + new_word_1 + sentence[start_1+len_word_1:]
+                new_start_2 = entity_index(word_2, start_2, sentence)
+                sentence = sentence[:new_start_2] + new_word_2 + sentence[new_start_2+len_word_2:]
                 
                 df_2 = pd.DataFrame({"Id": [idx], "sentence": [sentence], "subj_entity_type": [entity_type_dict['subj']], 
                                      "obj_entity_type": [entity_type_dict['obj']], "label" : [label]})
