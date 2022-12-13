@@ -17,8 +17,8 @@ def main():
     
     html_directory = os.path.join("./data/RE_task_dataset/plain.html/pool", arg.file)
     json_directory = os.path.join("./data/RE_task_dataset/ann.json/master/pool", arg.file)
-    html_file_list = os.listdir(html_directory)
-    json_file_list = os.listdir(json_directory)
+    html_file_list = sorted(os.listdir(html_directory))
+    json_file_list = sorted(os.listdir(json_directory))
 
     result = make_df(html_directory, html_file_list, json_directory, json_file_list, legend)
     result_no_label = result.copy()
