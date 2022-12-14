@@ -69,4 +69,6 @@ def load_categories(category_path='categories.json'):
 def load_legend(legend_path='legend.json'):
     with open(legend_path, 'r') as f:
         legend = json.load(f)
+    legend = np.array(list(legend.values()))
+    legend = np.unique(legend)
     return legend
