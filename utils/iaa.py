@@ -36,7 +36,8 @@ class IAA:
                         validcheck_error_msg += f"{self.xls_list[i]}의 '{category}'에서 valid_error가 서로 다른 항목이 존재합니다. -> {indices}\n"
                 
                 # 2. valid_check=True지만 label이 안된 것이 없는지 검사합니다.
-                filtered_df = annot[sheetname][annot[sheetname]['valid_check'] == True]
+                condition = (annot[sheetname]['valid_check'] == True) & (annot[sheetname]['error_check'] == False)
+                filtered_df = annot[sheetname][condition]
                 for id, label in zip(filtered_df['Id'].values, filtered_df['label'].values):
                     if pd.isnull(label):
                         validity = False
@@ -47,10 +48,7 @@ class IAA:
             raise Exception(error_msg)
             
     def get_sheetname(self, sheets, category):
-        print()
-        print(category)
         for sheet in sheets:
-            print(sheet)
             if category in sheet:
                 return sheet
         raise Exception(f'{category}와 매칭되는 sheet가 없습니다.')
@@ -63,7 +61,8 @@ class IAA:
             for i, annot in enumerate(self.annot_list):
                 sheetname = self.get_sheetname(annot.keys(), category)
                 df = annot[sheetname]
-                df = df[df['valid_check'] == True]
+                condition = (df['valid_check'] == True) & (df['error_check'] == False)
+                df = df[condition]
                 values = list(map(lambda x: self.legend.tolist().index(x), df['label'].values))
                 key = 'worker' + str(i)
                 workers[key] = np.append(workers[key], values)
