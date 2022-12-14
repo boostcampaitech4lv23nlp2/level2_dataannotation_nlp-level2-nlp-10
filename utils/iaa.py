@@ -80,4 +80,9 @@ def load_legend(legend_path='legend.json'):
         legend = json.load(f)
     legend = np.array(list(legend.values()))
     legend = np.unique(legend)
-    return legend
+    labels = np.array([])
+    for item in legend:
+        if 'subj' in item or 'obj' in item:
+            continue
+        labels = np.append(labels, item)
+    return labels
