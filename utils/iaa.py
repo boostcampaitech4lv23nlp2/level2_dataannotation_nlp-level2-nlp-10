@@ -33,3 +33,19 @@ class IAA:
             if category in sheet:
                 return sheet
         raise Exception(f'{category}와 매칭되는 sheet가 없습니다.')
+
+    def create_iaa_xlsx(self, save_path='data/workers_annot.xlsx'):
+        workers = [np.array([], dtype=np.int8) for _ in range(self.workers)]
+        workers = {'worker' + str(i): values for i, values in enumerate(workers)}
+        legend_list = list(self.legend.values())
+        for category in self.categories:
+            for i, annot in enumerate(self.annot_list):
+                sheetname = self.get_sheetname(annot.keys(), category)
+                df = annot[sheetname]
+                df = df[df['valid_check'] == True]
+                values = list(map(lambda x: legend_list.index(x), df['label'].values))
+                key = 'worker' + str(i)
+                workers[key] = np.append(workers[key], values)
+        out_df = pd.DataFrame(workers)
+        print(out_df)
+        out_df.to_excel(save_path, index=False)
