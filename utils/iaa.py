@@ -12,9 +12,9 @@ class IAA:
         else:
             self.categories = target_category
         self.legend = load_legend(legend_path)
-        xls_list = [os.path.join(annot_path, file) for file in os.listdir(annot_path) if '.xlsx' in file]
-        self.annot_list = [pd.read_excel(xls_path, sheet_name=None) for xls_path in xls_list]
-        self.workers = len(xls_list)
+        self.xls_list = [os.path.join(annot_path, file) for file in os.listdir(annot_path) if '.xlsx' in file]
+        self.annot_list = [pd.read_excel(xls_path, sheet_name=None) for xls_path in self.xls_list]
+        self.workers = len(self.xls_list)
         self.test_annot_validity()
 
     def test_annot_validity(self):
@@ -47,7 +47,10 @@ class IAA:
             raise Exception(error_msg)
             
     def get_sheetname(self, sheets, category):
+        print()
+        print(category)
         for sheet in sheets:
+            print(sheet)
             if category in sheet:
                 return sheet
         raise Exception(f'{category}와 매칭되는 sheet가 없습니다.')
