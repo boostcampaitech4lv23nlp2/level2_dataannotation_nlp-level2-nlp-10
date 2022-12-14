@@ -60,3 +60,13 @@ class IAA:
         out_df = pd.DataFrame(workers)
         print(out_df)
         out_df.to_excel(save_path, index=False)
+
+def load_categories(category_path='categories.json'):
+    with open(category_path, 'r') as f:
+        categories = json.load(f)
+    return categories
+
+def load_legend(legend_path='legend.json'):
+    with open(legend_path, 'r') as f:
+        legend = json.load(f)
+    return legend
