@@ -12,11 +12,13 @@ class IAA:
 
     def test_annot_validity(self):
         validity = True
-        error_msg = ''
+        validcheck_error_msg = ''
+        label_error_msg = ''
         for category in self.categories:
             valid_check = np.array([])
-            for annot in self.annot_list:
+            for i, annot in enumerate(self.annot_list):
                 sheetname = self.get_sheetname(annot.keys(), category)
+                # 1. 모든 valid_check가 동일한지 검사합니다.
                 valid_values = annot[sheetname]['valid_check'].values
                 if valid_check.size == 0:
                     valid_check = valid_values.copy()
@@ -24,8 +26,17 @@ class IAA:
                     if np.array_equal(valid_check, valid_values) is False:
                         validity = False
                         indices = np.where((valid_check == valid_values) == False)
-                        error_msg += f'{category}에서 valid_error가 서로 다른 항목이 존재합니다. -> {indices}\n'
+                        validcheck_error_msg += f"{self.xls_list[i]}의 '{category}'에서 valid_error가 서로 다른 항목이 존재합니다. -> {indices}\n"
+                
+                # 2. valid_check=True지만 label이 안된 것이 없는지 검사합니다.
+                filtered_df = annot[sheetname][annot[sheetname]['valid_check'] == True]
+                for id, label in zip(filtered_df['Id'].values, filtered_df['label'].values):
+                    if pd.isnull(label):
+                        validity = False
+                        label_error_msg += f"{self.xls_list[i]}의 '{category}'에서 Id={id}인 데이터의 label 값이 지정되지 않았습니다.\n"
+                
         if validity is False:
+            error_msg = f'Annotation_file_error\nvalid_check\n{validcheck_error_msg}\nlabel_error\n{label_error_msg}'
             raise Exception(error_msg)
             
     def get_sheetname(self, sheets, category):
