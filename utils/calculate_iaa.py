@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from fleiss import fleissKappa
+from .fleiss import fleissKappa
 
 def print_fleisskappa(iaa_xlsx_path='iaa_sample.xlsx'):
     result = pd.read_excel(iaa_xlsx_path, engine='openpyxl')
