@@ -1,3 +1,10 @@
+import pandas as pd
+import os
+import json
+from tqdm import tqdm
+import numpy as np
+from collections import defaultdict
+
 class IAA:
     def __init__(self, annot_path='data/annots/', categories_path='categories.json', legend_path='legend.json', target_category=None):
         if target_category is None:
@@ -8,7 +15,7 @@ class IAA:
         xls_list = [os.path.join(annot_path, file) for file in os.listdir(annot_path) if '.xlsx' in file]
         self.annot_list = [pd.read_excel(xls_path, sheet_name=None) for xls_path in xls_list]
         self.workers = len(xls_list)
-        self.test_annot_validity(target_category)
+        self.test_annot_validity()
 
     def test_annot_validity(self):
         validity = True
@@ -48,17 +55,16 @@ class IAA:
     def create_iaa_xlsx(self, save_path='data/workers_annot.xlsx'):
         workers = [np.array([], dtype=np.int8) for _ in range(self.workers)]
         workers = {'worker' + str(i): values for i, values in enumerate(workers)}
-        legend_list = list(self.legend.values())
+        #legend_list = list(self.legend.values())
         for category in self.categories:
             for i, annot in enumerate(self.annot_list):
                 sheetname = self.get_sheetname(annot.keys(), category)
                 df = annot[sheetname]
                 df = df[df['valid_check'] == True]
-                values = list(map(lambda x: legend_list.index(x), df['label'].values))
+                values = list(map(lambda x: self.legend.tolist().index(x), df['label'].values))
                 key = 'worker' + str(i)
                 workers[key] = np.append(workers[key], values)
         out_df = pd.DataFrame(workers)
-        print(out_df)
         out_df.to_excel(save_path, index=False)
 
 def load_categories(category_path='categories.json'):
