@@ -69,8 +69,9 @@ class IAA:
                         indices = np.where((valid_check == valid_values) == False)
                         print(indices[0])
                         ids = annot[sheetname].iloc[indices[0]]['Id'].values
+                        cur_labels = annot[sheetname].iloc[indices[0]]['label'].values
                         
-                        validcheck_error_msg += f"{self.xls_list[i]}의 '{category}'에서 valid_error가 서로 다른 항목이 존재합니다. -> Id={ids}\n"
+                        validcheck_error_msg += f"{self.xls_list[i]}의 '{category}'에서 valid_error가 서로 다른 항목이 존재합니다. -> Id={ids}, labels={cur_labels}\n"
                 
                 # 3. valid_check=True지만 label이 안된 것이 없는지 검사합니다.
                 condition = (annot[sheetname]['valid_check'] == True)
