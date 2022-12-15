@@ -19,13 +19,13 @@ def main(xls_path):
     remove_list = [
         # 라벨링이 아직 안됨
         #'제1차세계대전',
-        '공산주의',
-        '중국',
-        '핵무기',
+        #'공산주의',
+        #'중국',
+        #'핵무기',
         # 기타 오류
-        '유대인',
+        #'유대인',
         '냉전',
-        '유엔', 
+        #'유엔', 
     ]
     for item in remove_list:
         available_categories.remove(item)
