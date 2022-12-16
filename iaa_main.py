@@ -1,8 +1,10 @@
 from utils.iaa import IAA
+from utils.data_gen import DataGen
 from utils.calculate_iaa import print_fleisskappa
 import sys
+import argparse
 
-def main(xls_path):
+def select_categories():
     available_categories = [
     '제1차세계대전',
     '유엔',
@@ -17,29 +19,47 @@ def main(xls_path):
     '핵무기'
     ]
     remove_list = [
-        # 라벨링이 아직 안됨
         #'제1차세계대전',
-        #'공산주의',
-        #'중국',
-        #'핵무기',
-        # 기타 오류
-        #'유대인',
-        '냉전',
-        #'유엔', 
+        #'냉전',
     ]
     for item in remove_list:
         available_categories.remove(item)
-    print('\n' + '-'*10 + 'categories' + '-'*10)
+    return available_categories
+
+def print_description(run_type, available_categories):
+    print('\n' + '='*10 + f' {run_type} ' + '='*10)
+    print('-'*10 + 'categories' + '-'*10)
     for category in available_categories:
         print(category)
     print('-'*30 + '\n')
+
+def run_iaa(xls_path):
+    available_categories = select_categories()
+    print_description('IAA', available_categories)
     iaa = IAA(target_category=available_categories)
     iaa.create_iaa_xlsx()
     print_fleisskappa('/opt/ml/level2_dataannotation_nlp-level2-nlp-10/data/workers_annot.xlsx')
 
-if __name__ == '__main__':
-    xls_path = '/opt/ml/level2_dataannotation_nlp-level2-nlp-10/data/workers_annot.xlsx'
-    if len(sys.argv) > 1:
-        xls_path = sys.argv[1]
+def run_datagen():
+    available_categories = select_categories()
+    print_description('Datagen', available_categories)
+    datagen = DataGen(target_category=available_categories)
+    datagen.create_data()
 
-    main(xls_path)
+if __name__ == '__main__':
+    default_xls_path = '/opt/ml/level2_dataannotation_nlp-level2-nlp-10/data/workers_annot.xlsx'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--iaa_path', default=default_xls_path)
+    parser.add_argument('--datagen', default=False)
+    arg = parser.parse_args()
+    
+    xls_path = arg.iaa_path
+
+    for c in ['T', 'True', 'true', 't']:
+        if c == arg.datagen:
+            arg.datagen = True
+        
+    if arg.datagen:
+        run_datagen()
+    else:
+        run_iaa(xls_path)
