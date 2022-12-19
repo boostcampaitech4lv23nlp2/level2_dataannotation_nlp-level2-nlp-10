@@ -4,7 +4,6 @@
 - tagtog으로 각자 tagging한 파일을 스프레드시트에서 tagging이 가능하도록 csv파일을 만들기 위함
 
 ## 프로젝트 구조
-- 
     ├─ utils
     │  ├─ calculate_iaa.py
     │  ├─ iaa.py
