@@ -3,6 +3,22 @@
 ## 코드의 목적
 - tagtog으로 각자 tagging한 파일을 스프레드시트에서 tagging이 가능하도록 csv파일을 만들기 위함
 
+## 프로젝트 구조
+- 
+    ├─ utils
+    │  ├─ calculate_iaa.py
+    │  ├─ iaa.py
+    │  ├─ fleiss.py
+    │  ├─ entity_index.py
+    │  └─ preprocessor.py
+    ├─ categories.json
+    ├─ legend.json
+    ├─ graph_notebbok.ipynb
+    ├─ main.py
+    ├─ iaa_main.py
+    ├─ requirements.txt
+    └─ .gitignore
+
 ## CSV 파일 구조
 - Id, sentence, subject_entity_type, object_entity_type, label
 
